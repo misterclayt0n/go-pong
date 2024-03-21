@@ -1,0 +1,54 @@
+# Binários para programas e plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+
+# Arquivos de saída do link de build
+*.out
+
+# Pastas de projeto
+/vendor/
+
+# Arquivos ocultos do sistema
+.DS_Store
+Thumbs.db
+
+# Diretório que contém arquivos de configuração de usuário para o VSCode
+.vscode/
+
+# Arquivos de cobertura de código
+coverage.txt
+
+# Arquivos de cache do compilador Go
+*.o
+*.a
+
+# Arquivos de cache de módulos Go
+go.sum
+go.mod
+
+# Pastas de cache do Go
+/go-build/
+/gopath/pkg/
+
+# Pastas de binários do Go
+/bin/
+
+# Arquivos de configuração de IDE ou editores de texto
+.idea/
+*.swp
+*.swo
+*.sublime-workspace
+
+# Arquivos específicos de teste
+*_test.go
+
+# Arquivos de log
+*.log
+
+# Arquivos gerados por ferramentas
+/vendor/
+Gopkg.lock
