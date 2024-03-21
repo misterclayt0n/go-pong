@@ -9,7 +9,10 @@ func main() {
 	if err := sdl.Init(sdl.INIT_EVERYTHING); err != nil {
 		log.Fatalf("Erro ao inicializar SDL: %s", err)
 	}
-	defer sdl.Quit() window, err := sdl.CreateWindow("Pong em Go com SDL2", sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED, 800, 600, sdl.WINDOW_SHOWN|sdl.WINDOW_RESIZABLE) if err != nil {
+	defer sdl.Quit()
+
+	window, err := sdl.CreateWindow("Pong em Go com SDL2", sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED, 800, 600, sdl.WINDOW_SHOWN|sdl.WINDOW_RESIZABLE)
+	if err != nil {
 		log.Fatalf("Erro ao criar janela: %s", err)
 	}
 	defer window.Destroy()
@@ -21,6 +24,16 @@ func main() {
 	defer renderer.Destroy()
 
 	for {
+		windowWidth, windowHeight := window.GetSize()
+
+		positionY := (windowHeight - 150) / 2
+
+		leftRectangleX := windowWidth / 6
+		rightRectangleX := (windowWidth * 5 / 6) - 20
+
+		leftRectangle := sdl.Rect{X: leftRectangleX, Y: positionY, W: 20, H: 150}
+		rightRectangle := sdl.Rect{X: rightRectangleX, Y: positionY, W: 20, H: 150}
+
 		for event := sdl.PollEvent(); event != nil; event = sdl.PollEvent() {
 			switch e := event.(type) {
 			case *sdl.QuitEvent:
@@ -32,8 +45,14 @@ func main() {
 			}
 		}
 
-		renderer.SetDrawColor(255, 0, 0, 255)
+		renderer.SetDrawColor(0, 0, 0, 255)
 		renderer.Clear()
+
+		renderer.SetDrawColor(255, 255, 255, 255)
+
+		renderer.FillRect(&leftRectangle)
+		renderer.FillRect(&rightRectangle)
+
 		renderer.Present()
 	}
 }
