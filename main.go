@@ -23,16 +23,17 @@ func main() {
 	}
 	defer renderer.Destroy()
 
+	windowWidth, windowHeight := window.GetSize()
+
+	positionY := (windowHeight - 150) / 2
+
+	leftRectangleX := windowWidth / 6
+	rightRectangleX := (windowWidth * 5 / 6) - 20
+
+	leftRectangle := sdl.Rect{X: leftRectangleX, Y: positionY, W: 20, H: 150}
+	rightRectangle := sdl.Rect{X: rightRectangleX, Y: positionY, W: 20, H: 150}
+
 	for {
-		windowWidth, windowHeight := window.GetSize()
-
-		positionY := (windowHeight - 150) / 2
-
-		leftRectangleX := windowWidth / 6
-		rightRectangleX := (windowWidth * 5 / 6) - 20
-
-		leftRectangle := sdl.Rect{X: leftRectangleX, Y: positionY, W: 20, H: 150}
-		rightRectangle := sdl.Rect{X: rightRectangleX, Y: positionY, W: 20, H: 150}
 
 		for event := sdl.PollEvent(); event != nil; event = sdl.PollEvent() {
 			switch e := event.(type) {
@@ -41,6 +42,20 @@ func main() {
 			case *sdl.WindowEvent:
 				if e.Event == sdl.WINDOWEVENT_RESIZED {
 					renderer.SetViewport(&sdl.Rect{X: 0, Y: 0, W: e.Data1, H: e.Data2})
+				}
+
+			case *sdl.KeyboardEvent:
+				switch e.Keysym.Sym {
+				case sdl.K_UP:
+					leftRectangle.Y -= 10
+					if leftRectangle.Y < 0 {
+						leftRectangle.Y = 0
+					}
+				case sdl.K_DOWN:
+					leftRectangle.Y += 10
+					if leftRectangle.Y > windowHeight-leftRectangle.H {
+						leftRectangle.Y = windowHeight - leftRectangle.H
+					}
 				}
 			}
 		}
