@@ -6,12 +6,14 @@ import (
 )
 
 func main() {
+	var windowWidth, windowHeight int32 = 800, 600
+
 	if err := sdl.Init(sdl.INIT_EVERYTHING); err != nil {
 		log.Fatalf("Erro ao inicializar SDL: %s", err)
 	}
 	defer sdl.Quit()
 
-	window, err := sdl.CreateWindow("Pong em Go com SDL2", sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED, 800, 600, sdl.WINDOW_SHOWN|sdl.WINDOW_RESIZABLE)
+	window, err := sdl.CreateWindow("Pong em Go com SDL2", sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED, 800, 600, sdl.WINDOW_SHOWN)
 	if err != nil {
 		log.Fatalf("Erro ao criar janela: %s", err)
 	}
@@ -23,27 +25,21 @@ func main() {
 	}
 	defer renderer.Destroy()
 
-	windowWidth, windowHeight := window.GetSize()
-
 	positionY := (windowHeight - 150) / 2
 
 	leftRectangleX := windowWidth / 6
 	rightRectangleX := (windowWidth * 5 / 6) - 20
+	var ballVelX, ballVelY int32 = 5, 5
 
 	leftRectangle := sdl.Rect{X: leftRectangleX, Y: positionY, W: 20, H: 150}
 	rightRectangle := sdl.Rect{X: rightRectangleX, Y: positionY, W: 20, H: 150}
+	ball := sdl.Rect{X: windowWidth / 2, Y: windowHeight / 2, W: 15, H: 15}
 
 	for {
-
 		for event := sdl.PollEvent(); event != nil; event = sdl.PollEvent() {
 			switch e := event.(type) {
 			case *sdl.QuitEvent:
 				return
-			case *sdl.WindowEvent:
-				if e.Event == sdl.WINDOWEVENT_RESIZED {
-					renderer.SetViewport(&sdl.Rect{X: 0, Y: 0, W: e.Data1, H: e.Data2})
-				}
-
 			case *sdl.KeyboardEvent:
 				switch e.Keysym.Sym {
 				case sdl.K_UP:
@@ -60,6 +56,16 @@ func main() {
 			}
 		}
 
+		ball.X += ballVelX
+		ball.Y += ballVelY
+
+		if ball.Y <= 0 || ball.Y+ball.H >= windowHeight {
+			ballVelY = -ballVelY
+		}
+		if ball.X <= 0 || ball.X+ball.W >= windowWidth {
+			ballVelX = -ballVelX
+		}
+
 		renderer.SetDrawColor(0, 0, 0, 255)
 		renderer.Clear()
 
@@ -67,6 +73,7 @@ func main() {
 
 		renderer.FillRect(&leftRectangle)
 		renderer.FillRect(&rightRectangle)
+		renderer.FillRect(&ball)
 
 		renderer.Present()
 	}
