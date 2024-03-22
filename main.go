@@ -5,6 +5,13 @@ import (
 	"log"
 )
 
+func checkCollision(rect1, rect2 *sdl.Rect) bool {
+	return rect1.X < rect2.X+rect2.W &&
+		rect1.X+rect1.W > rect2.X &&
+		rect1.Y < rect2.Y+rect2.H &&
+		rect1.H+rect1.Y > rect2.Y
+}
+
 func main() {
 	var windowWidth, windowHeight int32 = 800, 600
 
@@ -30,6 +37,7 @@ func main() {
 	leftRectangleX := windowWidth / 6
 	rightRectangleX := (windowWidth * 5 / 6) - 20
 	var ballVelX, ballVelY int32 = 5, 5
+	var IAVel int32 = 5
 
 	leftRectangle := sdl.Rect{X: leftRectangleX, Y: positionY, W: 20, H: 150}
 	rightRectangle := sdl.Rect{X: rightRectangleX, Y: positionY, W: 20, H: 150}
@@ -64,6 +72,22 @@ func main() {
 		}
 		if ball.X <= 0 || ball.X+ball.W >= windowWidth {
 			ballVelX = -ballVelX
+		}
+
+		if checkCollision(&ball, &leftRectangle) || checkCollision(&ball, &rightRectangle) {
+			ballVelX = -ballVelX
+		}
+
+		if ball.Y < rightRectangle.Y {
+			rightRectangle.Y -= IAVel
+			if rightRectangle.Y < 0 {
+				rightRectangle.Y = 0
+			}
+		} else if ball.Y > rightRectangle.Y+rightRectangle.H {
+			rightRectangle.Y += IAVel
+			if rightRectangle.Y > windowHeight-rightRectangle.H {
+				rightRectangle.Y = windowHeight - rightRectangle.H
+			}
 		}
 
 		renderer.SetDrawColor(0, 0, 0, 255)
